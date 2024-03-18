@@ -133,5 +133,9 @@ class Client:
         client.disconnect()
 
 
-def test_respond_with_process_return_value_on_message(mqtt_broker, message_adapter, processor_mock, client):
-    assert client.request('my-request') == processor_mock.process.return_value
+def test_call_process_with_message_and_respond_with_return_value(mqtt_broker, message_adapter, processor_mock, client):
+    request = b'my-request'
+
+    assert client.request(request) == processor_mock.process.return_value
+
+    processor_mock.process.assert_called_once_with(request)
