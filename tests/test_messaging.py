@@ -52,7 +52,9 @@ def wait_for_broker_start():
 
 @pytest.fixture
 def processor_mock():
-    return MagicMock(spec_set=MessageProcessor)
+    processor = MagicMock(spec_set=MessageProcessor)
+    processor.process.return_value = b'my-response'
+    return processor
 
 
 @pytest.fixture
@@ -132,6 +134,4 @@ class Client:
 
 
 def test_respond_with_process_return_value_on_message(mqtt_broker, message_adapter, processor_mock, client):
-    processor_mock.process.return_value = b'my-response'
-
     assert client.request('my-request') == processor_mock.process.return_value
