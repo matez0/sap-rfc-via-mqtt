@@ -31,6 +31,7 @@ class MessageAdapter:
 
     def close(self):
         self.client.unsubscribe(TOPIC_REQUEST)
+        self.client.disconnect()
         self.loop_thread.join()
 
     @staticmethod
@@ -64,5 +65,3 @@ class MessageAdapter:
         # The reason_code_list is only present in MQTTv5. In MQTTv3 it will always be empty.
         if reason_code_list and reason_code_list[0].is_failure:
             logger.error('Failed to unsubscribe; reason=%s', reason_code_list[0])
-
-        client.disconnect()
