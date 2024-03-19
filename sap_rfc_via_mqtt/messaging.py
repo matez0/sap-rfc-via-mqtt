@@ -1,7 +1,6 @@
 import logging
 import os
 from abc import ABC, abstractmethod
-from threading import Thread
 
 import paho.mqtt.client as mqtt
 
@@ -26,13 +25,12 @@ class MessageAdapter:
         client.on_unsubscribe = self._on_unsubscribe
         self.client = client
         client.connect(MQTT_BROKER_HOST)
-        self.loop_thread = Thread(target=client.loop_forever, args=(), daemon=True)
-        self.loop_thread.start()
+        client.loop_start()
 
     def close(self):
         self.client.unsubscribe(TOPIC_REQUEST)
         self.client.disconnect()
-        self.loop_thread.join()
+        self.client.loop_stop()
 
     @staticmethod
     def _on_connect(client, userdata, flags, reason_code, properties):
