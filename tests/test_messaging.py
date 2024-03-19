@@ -1,7 +1,8 @@
 import os
-from contextlib import closing
+from contextlib import closing, contextmanager
 from pathlib import Path
 from shlex import split
+from signal import SIGINT
 from subprocess import Popen
 from threading import Thread
 from time import sleep
@@ -23,14 +24,20 @@ TOPIC_RESPONSE_BASE = f'{TOPIC_REQUEST}/resp'
 
 @pytest.fixture
 def mqtt_broker():
+    with start_mqtt_broker() as broker:
+        yield broker
+
+
+@contextmanager
+def start_mqtt_broker():
     BASE_DIR = Path(__file__).resolve().parent
 
     proc = Popen(split('python startbroker.py'), cwd=BASE_DIR / 'paho.mqtt.testing' / 'interoperability')
     try:
         wait_for_broker_start()
-        yield
+        yield proc
     finally:
-        proc.terminate()
+        proc.send_signal(SIGINT)
         proc.wait()
 
 
@@ -139,3 +146,15 @@ def test_call_process_with_message_and_respond_with_return_value(mqtt_broker, me
     assert client.request(request) == processor_mock.process.return_value
 
     processor_mock.process.assert_called_once_with(request)
+
+
+def test_keep_working_when_broker_gets_lost_temporarily(mqtt_broker, message_adapter, processor_mock):
+    sleep(1)  # Wait for adapter to connect.
+    mqtt_broker.send_signal(SIGINT)
+    mqtt_broker.wait()
+
+    with start_mqtt_broker() as restarted_broker:
+        # If test broker only grants QoS 0, we have to wait for adapter to reconnect before sending the request.
+        sleep(2)
+
+        assert Client().request(b'my-request') == processor_mock.process.return_value
