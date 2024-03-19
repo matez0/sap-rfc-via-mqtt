@@ -120,7 +120,7 @@ class Client:
         properties = Properties(PacketTypes.PUBLISH)
         properties.ResponseTopic = userdata['response_topic']
 
-        client.publish(TOPIC_REQUEST, userdata['request'], qos=2, properties=properties)
+        client.publish(TOPIC_REQUEST, userdata['request'], qos=2, properties=properties, retain=True)
         print('>>>> Request sent >>>>', TOPIC_REQUEST, userdata['request'])
 
     @staticmethod
@@ -153,7 +153,4 @@ def test_keep_working_when_broker_gets_lost_temporarily(mqtt_broker, message_ada
     mqtt_broker.wait()
 
     with start_mqtt_broker() as restarted_broker:
-        # If test broker only grants QoS 0, we have to wait for adapter to reconnect before sending the request.
-        sleep(2)
-
         assert Client().request(b'my-request') == processor_mock.process.return_value
