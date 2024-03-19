@@ -115,13 +115,12 @@ class Client:
         assert not reason_code_list[0].is_failure, \
             f"Client failed to subscribe: {reason_code_list[0]}"
 
-        qos = reason_code_list[0].value
-        print(f"Broker granted the following QoS: {qos}")
+        print(f"Broker granted the following QoS: {reason_code_list[0].value}")
 
         properties = Properties(PacketTypes.PUBLISH)
         properties.ResponseTopic = userdata['response_topic']
 
-        client.publish(TOPIC_REQUEST, userdata['request'], qos=qos, properties=properties)
+        client.publish(TOPIC_REQUEST, userdata['request'], qos=2, properties=properties)
         print('>>>> Request sent >>>>', TOPIC_REQUEST, userdata['request'])
 
     @staticmethod
