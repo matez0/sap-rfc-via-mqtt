@@ -13,9 +13,7 @@ pip install --upgrade pip
 pip install -r requirements.txt -r requirements-testing.txt
 ```
 
-For testing MQTT communication, clone [Paho Testing Utilities](https://github.com/eclipse/paho.mqtt.testing)
-in the tests directory:
+For testing MQTT communication, clone [Paho Testing Utilities](https://github.com/eclipse/paho.mqtt.testing):
 ```
-cd tests
 git clone https://github.com/eclipse/paho.mqtt.testing.git
 ```

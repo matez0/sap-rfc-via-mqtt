@@ -30,7 +30,7 @@ def mqtt_broker():
 
 @contextmanager
 def start_mqtt_broker():
-    BASE_DIR = Path(__file__).resolve().parent
+    BASE_DIR = Path(__file__).resolve().parent.parent
 
     proc = Popen(split('python startbroker.py'), cwd=BASE_DIR / 'paho.mqtt.testing' / 'interoperability')
     try:
