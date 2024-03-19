@@ -154,3 +154,17 @@ def test_keep_working_when_broker_gets_lost_temporarily(mqtt_broker, message_ada
 
     with start_mqtt_broker() as restarted_broker:
         assert Client().request(b'my-request') == processor_mock.process.return_value
+
+
+def test_no_interference_when_sending_multiple_requests(mqtt_broker, message_adapter, processor_mock, client):
+    requests = [b'my-request', b'my-other-request']
+    responses = [b'my-response', b'my-other-response']
+    processor_mock.process.side_effect = responses
+
+    assert client.request(requests[0]) == responses[0]
+
+    processor_mock.process.assert_called_once_with(requests[0])
+
+    assert client.request(requests[1]) == responses[1]
+
+    processor_mock.process.assert_called_with(requests[1])
