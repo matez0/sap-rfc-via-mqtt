@@ -17,3 +17,7 @@ For testing MQTT communication, clone [Paho Testing Utilities](https://github.co
 ```
 git clone https://github.com/eclipse/paho.mqtt.testing.git
 ```
+Run the tests:
+```
+pytest tests -v
+```
