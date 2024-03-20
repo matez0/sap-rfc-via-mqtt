@@ -13,6 +13,21 @@ The message adapter, parser, and serializer abstractions allow for
 the messaging protocol, message format, and response format
 to be easily replaced independently from other parts of the service.
 
+## Installation
+
+Install [PyRFC](https://github.com/SAP/PyRFC).
+
+Install service dependencies:
+```
+pip install -r requirements.txt
+```
+Set the required environment variables, for example, see [test environment](tests/.env).
+
+Start service:
+```
+python sap_rfc_via_mqtt/main.py
+```
+
 ## Testing
 
 Create the virtual environment:
