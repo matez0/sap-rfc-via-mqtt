@@ -3,6 +3,16 @@
 
 # SAP RFC via MQTT
 
+A microservice for making SAP RFC via MQTT messages.
+
+The component diagram of the system:
+
+![Component diagram](sap-rfc-via-mqtt-arch.svg)
+
+The message adapter, parser, and serializer abstractions allow for
+the messaging protocol, message format, and response format
+to be easily replaced independently from other parts of the service.
+
 ## Testing
 
 Create the virtual environment:
